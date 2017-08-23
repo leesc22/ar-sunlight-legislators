@@ -1,13 +1,29 @@
+require 'byebug'
 require 'csv'
+require 'date'
+require_relative '../app/models/legislator'
+require_relative '../app/models/representative'
+require_relative '../app/models/senator'
 
 class SunlightLegislatorsImporter
   def self.import(filename)
     csv = CSV.new(File.open(filename), :headers => true)
+    attributes = ["title", "firstname", "middlename", "lastname", "name_suffix", "party", "state", "district", "in_office", "gender", "phone", "fax", "website", "webform", "twitter_id", 'senate_class', "birthdate"]
     csv.each do |row|
+      row = row.to_h
+      hash = {}
       row.each do |field, value|
-        # TODO: begin
-        raise NotImplementedError, "TODO: figure out what to do with this row and do it!"
-        # TODO: end
+        hash[field] = value
+        hash.keep_if { |k, v| attributes.include?(k) }
+      end
+      birthday = Date.strptime(hash["birthdate"], "%m/%d/%Y")
+      hash["birthdate"] = birthday
+      if hash["title"] == "Rep"
+        Representative.create!(hash)
+      elsif hash["title"] == "Sen"
+        Senator.create!(hash)
+      else
+        Legislator.create!(hash)
       end
     end
   end
@@ -23,3 +39,7 @@ end
 # rescue NotImplementedError => e
 #   $stderr.puts "You shouldn't be running this until you've modified it with your implementation!"
 # end
+
+
+# SunlightLegislatorsImporter.import('../db/data/legislators.csv')
+
