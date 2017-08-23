@@ -49,3 +49,8 @@ def statistics_active_states_all
 end
 
 statistics_active_states_all
+
+# Query 4
+puts "Senators: #{Senator.count}"
+puts "Representatives: #{Representative.count}"
+
