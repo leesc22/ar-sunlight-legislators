@@ -54,3 +54,7 @@ statistics_active_states_all
 puts "Senators: #{Senator.count}"
 puts "Representatives: #{Representative.count}"
 
+# Query 5
+Legislator.where(in_office: false).destroy_all
+puts "Senators: #{Senator.count}"
+puts "Representatives: #{Representative.count}"
